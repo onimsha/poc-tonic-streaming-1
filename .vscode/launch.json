@@ -1,0 +1,119 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'streaming-client'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=streaming-client",
+                    "--package=poc-tonic-streaming-1"
+                ],
+                "filter": {
+                    "name": "streaming-client",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'streaming-client'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=streaming-client",
+                    "--package=poc-tonic-streaming-1"
+                ],
+                "filter": {
+                    "name": "streaming-client",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'streaming-server'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=streaming-server",
+                    "--package=poc-tonic-streaming-1"
+                ],
+                "filter": {
+                    "name": "streaming-server",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'streaming-server'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=streaming-server",
+                    "--package=poc-tonic-streaming-1"
+                ],
+                "filter": {
+                    "name": "streaming-server",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'poc-tonic-streaming-1'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=poc-tonic-streaming-1",
+                    "--package=poc-tonic-streaming-1"
+                ],
+                "filter": {
+                    "name": "poc-tonic-streaming-1",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'poc-tonic-streaming-1'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=poc-tonic-streaming-1",
+                    "--package=poc-tonic-streaming-1"
+                ],
+                "filter": {
+                    "name": "poc-tonic-streaming-1",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

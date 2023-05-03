@@ -6,6 +6,7 @@ use futures::Stream;
 use std::{error::Error, io::ErrorKind, net::ToSocketAddrs, pin::Pin};
 use streaming::{EchoRequest, EchoResponse, Person};
 use tokio::sync::mpsc;
+use tokio::time::Duration;
 use tokio_stream::{wrappers::ReceiverStream, StreamExt};
 use tonic::{transport::Server, Request, Response, Status};
 
@@ -48,8 +49,49 @@ impl streaming::streaming_server::Streaming for StreamingServer {
         println!("Sending response to client....");
         let mut in_stream = req.into_inner();
         let (tx, rx) = mpsc::channel(4);
+        // tokio::spawn(async move {
+        //     while let Some(result) = in_stream.next().await {
+        //         let mut persons = Vec::new();
+        //         persons.push(Person {
+        //             name: "John".to_string(),
+        //             age: 12,
+        //         });
+        //         persons.push(Person {
+        //             name: "Bob".to_string(),
+        //             age: 23,
+        //         });
+        //         persons.push(Person {
+        //             name: "Alex".to_string(),
+        //             age: 33,
+        //         });
+        //         persons.push(Person {
+        //             name: "Miranda".to_string(),
+        //             age: 56,
+        //         });
+        //         match result {
+        //             Ok(_v) => tx
+        //                 .send(Ok(EchoResponse { person: persons }))
+        //                 .await
+        //                 .expect("working rx"),
+        //             Err(err) => {
+        //                 if let Some(io_err) = match_for_io_error(&err) {
+        //                     if io_err.kind() == ErrorKind::BrokenPipe {
+        //                         // here you can handle special case when client
+        //                         // disconnected in unexpected way
+        //                         eprintln!("\tclient disconnected: broken pipe");
+        //                         break;
+        //                     }
+        //                 }
+        //                 match tx.send(Err(err)).await {
+        //                     Ok(_) => (),
+        //                     Err(_err) => break, // response was droped
+        //                 }
+        //             }
+        //         }
+        //     }
+        // });
         tokio::spawn(async move {
-            while let Some(result) = in_stream.next().await {
+            loop {
                 let mut persons = Vec::new();
                 persons.push(Person {
                     name: "John".to_string(),
@@ -67,26 +109,12 @@ impl streaming::streaming_server::Streaming for StreamingServer {
                     name: "Miranda".to_string(),
                     age: 56,
                 });
-                match result {
-                    Ok(_v) => tx
-                        .send(Ok(EchoResponse { person: persons }))
-                        .await
-                        .expect("working rx"),
-                    Err(err) => {
-                        if let Some(io_err) = match_for_io_error(&err) {
-                            if io_err.kind() == ErrorKind::BrokenPipe {
-                                // here you can handle special case when client
-                                // disconnected in unexpected way
-                                eprintln!("\tclient disconnected: broken pipe");
-                                break;
-                            }
-                        }
-                        match tx.send(Err(err)).await {
-                            Ok(_) => (),
-                            Err(_err) => break, // response was droped
-                        }
-                    }
-                }
+
+                tx.send(Ok(EchoResponse { person: persons }))
+                    .await
+                    .expect("working rx");
+
+                tokio::time::sleep(Duration::from_secs(2)).await;
             }
         });
         // echo just write the same data that was received
